@@ -1,0 +1,53 @@
+.header {
+    position: fixed;  /* 或 fixed (看需求) */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10; /* 必須比 hero 更高 */
+    background-color: transparent;
+  }
+  
+  .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .link {
+    display: block;
+    text-decoration: none;
+    padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
+    /* color: var(--mantine-color-text); */
+    color: white;
+    font-size: var(--mantine-font-size-lg);
+    border-radius: var(--mantine-radius-sm);
+  }
+  
+  .link:hover {
+    background-color: var(--mantine-color-gray-0);
+  }
+  
+  .links {
+    display: flex;
+    gap: var(--mantine-spacing-xs);
+    margin-left: 50px;
+  }
+  
+  .search {
+    width: 200px;
+  }
+  
+  @media (max-width: 768px) {
+    .links {
+      display: none;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .search {
+      display: none;
+    }
+  }
+  

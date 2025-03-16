@@ -2,6 +2,8 @@ import { allPosts, Post } from 'contentlayer/generated';
 import { compareDesc, format, parseISO } from 'date-fns';
 import Link from 'next/link';
 import { Button } from "@mantine/core";
+import { HeroContentLeft } from '@/components/HeroContentLeft/HeroContentLeft';
+import {Header} from '@/components/Header/Header';
 
 function PostCard(post: Post) {
   return (
@@ -23,7 +25,9 @@ export default function Home() {
     compareDesc(new Date(a.date), new Date(b.date))
   );
   return (
-    <div className='max-w-xl mx-auto my-8'>
+    <div >
+      <Header />
+      <HeroContentLeft />
       <h1 className='text-center'>My Markdown Blog</h1>
       {posts.map((post) => (
         <PostCard {...post} key={post._id} />
