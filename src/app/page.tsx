@@ -1,7 +1,7 @@
 import { allPosts, Post } from 'contentlayer/generated';
 import { compareDesc, format, parseISO } from 'date-fns';
 import Link from 'next/link';
-import { Button } from "@mantine/core";
+import { Button, Space } from "@mantine/core";
 import { HeroContentLeft } from '@/components/HeroContentLeft/HeroContentLeft';
 import {Header} from '@/components/Header/Header';
 
@@ -28,16 +28,22 @@ export default function Home() {
     <div >
       <Header />
       <HeroContentLeft />
-      <h1 className='text-center'>My Markdown Blog</h1>
-      {posts.map((post) => (
-        <PostCard {...post} key={post._id} />
-      ))}
-      <Button className="bg-blue-500 hover:bg-blue-700 text-white">
-        Hello, Mantine + Tailwind!
-      </Button>
-      <Button variant="filled" color="cyan" size="lg" radius="xl">Button</Button>
-      <Button variant="light" color="red" size="md" radius="lg">Button</Button>
-      <Button fullWidth>Full width button</Button>
+      <section id="about">
+        <h1 className='text-center'>About area</h1>
+      </section>
+      <Space h="200px" />
+      <section id="projects">
+        <h1 className='text-center'>Projects area</h1>
+      </section>
+      <Space h="200px" />
+      <section id="blog">
+        <h1 className='text-center'>My Markdown Blog</h1>
+        {posts.map((post) => (
+          <PostCard {...post} key={post._id} />
+         ))}
+        <Button fullWidth>blog area</Button>
+      </section>
+      <Space h="200px" />
     </div>
   );
 }

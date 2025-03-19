@@ -34,7 +34,11 @@ const data = [
   },
 ];
 
-export function Footer() {
+type FooterProps = {
+  id?: string;  // 允許 id 作為可選屬性
+};
+
+export function Footer({ id }: FooterProps) {
   const groups = data.map((group) => {
     const links = group.links.map((link, index) => (
       <Text<'a'>
@@ -57,7 +61,7 @@ export function Footer() {
   });
 
   return (
-    <footer className={classes.footer}>
+    <footer className={classes.footer} id={id}>
       <Container className={classes.inner}>
         <div className={classes.logo}>
           <Text size="xs" c="dimmed" className={classes.description}>
