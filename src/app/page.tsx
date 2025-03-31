@@ -1,7 +1,7 @@
 'use client';
 
-import { allPosts, Post } from 'contentlayer/generated';
-import { compareDesc, format, parseISO } from 'date-fns';
+import { allPosts } from 'contentlayer/generated';
+import { compareDesc } from 'date-fns';
 import Link from 'next/link';
 import { Space, Timeline, Text, Grid, Container } from "@mantine/core";
 import { HeroContentLeft } from '@/components/HeroContentLeft/HeroContentLeft';
