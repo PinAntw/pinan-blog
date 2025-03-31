@@ -1,0 +1,354 @@
+---
+title: "機器學習技法一Ep1 SVM: Linear SVM"
+description: "台大資工林軒田機器學習筆記"
+slug: markdown-demo
+date: 2022-09-11
+type: Post
+img_url: "/ml1_img/5-3.png"
+badges:
+- ML
+- Note
+---
+
+# 機器學習技法一Ep1 SVM: Linear SVM
+<br />
+<br />
+
+# Content   
+
+ --- 
+## 課程核心   
+### 特徵轉換 (Features transform)的問題與三技法   
+會有三個方向可以探討   
+- 如果有很多特徵，怎麼做特徵轉換，如何控制轉換的複雜度? Embedding Numerous Features: Kernel Models   
+    - 技法一：SVM   
+- 如何找出有用的特徵，如何應用這些特徵?   
+    - 技法二：Adaptive Boosting (AdaBoost)   
+- 如何發掘隱藏的特徵?   
+    - 技法三：Deep Learning related models   
+   
+<br />
+<br />
+   
+# 技法一：SVM   
+技法一包含的SVM model:   
+- Linear SVM   
+- Dual SVM   
+- Kernel SVM   
+   
+<br />
+
+# SVM: Linear SVM   
+## 大綱   
+ --- 
+- Large-Margin Separating Hyperplane   
+- Standard Large-Margin Problem   
+- Support Vector Machine   
+- Reasons behing Large-Margin Hyperplane   
+   
+Video1~5    
+## Large-Margin Separating Hyperplane   
+ --- 
+### 回顧Linear Classification   
+先前我們成功使用PLA/pocket演算法在高維空間上面把正負類分開，但是有一個前提，我們的資料都需要為線性可分。 
+<Blogimage src="/ml1_img/1-6.png" alt="圖示" width={650} height={400} />
+
+
+例如對下面二維空間這種情況，我們可以找到一條直線將正負類完全分開。   
+但仔細想想的話，這樣的分類線其實不只一條，如下圖所示。   
+那問題來了，下圖中的三條分類線都能資料成功分類，但是哪條線更好呢？   
+<Blogimage src="/ml1_img/2-5.png" alt="圖示" width={650} height={400} />
+
+先分析這三條線的由來，都是由PLA/pocket演算法不斷修正錯誤點而最終產生的，合理性都足夠。   
+再來看看分類效果，三條直線都滿足VC bound要求，模型複雜度Ω(H)都相同（因為在這邊我們都使用“線”進行分類），也代表三條線在未看過資料上都具有一定的處理能力。   
+但最後如果一定要選一個的話，憑直覺會選擇第三條直線，**感覺**它的分類效果更好一點，那我們要如何解釋呢？   
+   
+讓我們從資料下手，如果測試與訓練樣本都來自於同一個分布的話，理論上測試樣本應該與訓練樣本相離不遠，而這些距離是由bias產生，所以我們為了要在測試樣本上也分類正確的話，應該要為我們的分類線**預留合理的距離。**   
+直觀做法就是將每個訓練樣本以自己為中心往外畫圓，等於我們每個點都預留了一點空間，為了做到「安全」的分類。而如果圓形畫的越大，表示我們的線「容忍度越高」，也越「安全」   
+<Blogimage src="/ml1_img/3-3.png" alt="圖示" width={650} height={400} />
+     
+**所以我們希望的是模型對於測量誤差容忍度要越高越好，即容忍多一點資料的雜訊（noise）**   
+   
+上面我們在訓練資料上畫圓來表示可能的誤差，如果不對資料下手，轉而分析我們的分類線，會發現相當於相當於計算點到直線**邊界**的**距離**。   
+距離越大，表示直線越“胖”，越能容忍誤差；   
+距離越小，表示直線越“瘦”，越不能容忍誤差。   
+所以我們的終極目標就是找到一條胖胖的線，這條線在未來的測試資料分類上，會表現的比較穩，分類效果較好。
+<Blogimage src="/ml1_img/5-3.png" alt="圖示" width={650} height={400} />
+
+再來，總不能一直講人家胖，要給一個名詞定義的話，我們稱之為分類線的**margin**   
+   
+總結一下！   
+整體來說，我們的目標需要分類線滿足兩個特性：   
+- 分類正確，即   
+
+$$
+y_n (\mathbf{w}^T \mathbf{x}_n) > 0
+$$
+   
+  
+- margin最大化   
+   
+   
+而分類線會由權重w決定，目的就是找到使margin最大時對應的w值，表示成數學式：   
+<Blogimage src="/ml1_img/6-3.png" alt="圖示" width={650} height={400} />
+
+## Standard Large-Margin Problem   
+在上一節中，我們已經將目標用數學式表示出來，接下來我們要嘗試解開這個問題。   
+   
+要讓margin最大，即讓離分類線最近的點到分類線距離最大，我們先來看一下如何計算點到分類線的距離。
+但首先來做一點數學小操作，我們將權重    
+
+$$
+\mathbf{w} (w0,w1,⋯ ,wd) 
+$$
+中的 w0拿出來（與之前做法不一樣），用 b（bias）表示。同時拿掉x中的 x0 項。這樣，hypothesis 就變成了：   
+<Blogimage src="/ml1_img/7-4.png" alt="圖示" width={650} height={400} />
+  
+定義好新的 h(x) 後，看看如何利用這個定義出距離   
+如上圖所示，平面上有兩個點：x′與x′′，因為這兩個點都在分類平面上，所以它們都滿足：   
+<Blogimage src="/ml1_img/8-4.png" alt="圖示" width={650} height={400} />
+
+   
+wTx’+b=0   
+wTx”+b=0   
+   
+移項得到   
+wTx’=−b，   
+wTx”=−b，   
+兩式相減   
+wT(x”−x’) = wTx”−wTx’ = −b−(−b) = 0   
+   
+來看看數學意義：   
+(x''-x'): 該hyperplane上的任何一個向量   
+而w與其相乘都等於0, 表示w這個向量垂直於該hyperplane,   
+w又可以稱為法向量，   
+   
+如果是法向量就好辦了，因為若要計算平面外一點 x 到該平面的距離，做法是只要將向量 (x−x′)投影到垂直於該平面的方向（即 w 方向）上就可以了。   
+
+這樣，令 (x′′−x′) 與 w的夾角為 θ，距離就可以表示為：   
+
+$$
+\text{distance}(\mathbf{x}, b, \mathbf{w}) = ∣(x−x 
+′
+ )cos(θ)∣ =\frac{\left| \mathbf{w}^T (\mathbf{x} - \mathbf{x}') \right|}{\|\mathbf{w}\|}
+
+$$
+代入wTx’=−b，可得：   
+
+   
+
+$$
+\text{distance}(\mathbf{x}, b, \mathbf{w}) = \frac{1}{\|\mathbf{w}\|}{\left| \mathbf{w}^T \mathbf{x} + \mathbf{b}\right|}
+
+$$
+
+   
+所以到這邊distance，也就是資料點到hyperplane距離也被我們表示出來了   
+接下來要把式子融合進原本的方程組中，別忘了我們的目標所有點都應該會被分類正確   
+
+$$
+y_n (\mathbf{w}^T \mathbf{x}_n + b) > 0
+$$
+則距離公式可以轉變成   
+
+$$
+distance(x,b,w)= \frac{1}{∥\mathbf{w}∥}y _n(\mathbf{w}^T\mathbf{x}_n+b)
+$$
+<Blogimage src="/ml1_img/9-4.png" alt="圖示" width={650} height={400} />
+    
+   
+   
+式子還是太複雜，我們需要繼續簡化，   
+我們知道分類面   
+
+$$
+\mathbf{w}^T\mathbf{x}+b=0
+\\
+3\mathbf{w}^T\mathbf{x}+3b=0
+
+$$
+其實是等價的，也就是說對 w, b 進行同樣的縮放，還會得到同一分類面，不難看出w, b存在無限多組解。   
+所以，為了消除縮放帶來的無限多組解影響，需要做標準化，我們令距離分類面最近的點距離都等於1：   
+- 為什麼可以這樣等於1，打個比方   
+    - 假設有一條馬路，馬路的中央有一條「分隔島」，代表 margin：   
+    - 如果用一把正常的捲尺去量，分隔島寬 2 公尺。   
+    - 如果突然換成一把放大 10 倍的尺子量，分隔島量起來只有 0.2 公尺寬（測量數值變小了，但實際寬度還是 2 公尺）。   
+    - 如果用一把縮小 10 倍的尺子量，分隔島量起來有 20 尺寬（測量數值變大了，但實際寬度還是 2 公尺）。   
+   
+我們不希望w, b（也就是尺子）有多種規格，所以等於1的用意就是規範好大家要用的尺子，才好去比較margin，不然大家標準都不一樣。   
+- 那等於1的好處是？   
+    - margin可以很簡單表示成1 / \|w\|   
+    - 原來方程組存在的限制式變得多餘：既然我們都規範最小是1了，所以一定每個都大於0   
+<Blogimage src="/ml1_img/10-4.png" alt="圖示" width={650} height={400} />
+
+   
+再繼續優化，限制式中的"="條件太嚴苛了，我們可以「放鬆條件」，變成   
+
+$$
+\min\ y_n(\mathbf{w}^T\mathbf{x}_n + b) \geq 1
+$$
+但是這樣有沒有可能全部都大於1 而沒有等於的情況？不會！   
+因為：（反證法）   
+- 假設所有值真的都大於 1，例如 >1.126   
+- 得到「聲稱」的最佳解 (b,w)   
+- 但我們發現，將 b 和 w 縮小 1.126 倍後（結果不變）仍然可以維持 ≥1 條件。   
+- 得到新縮放的 b′,w′，注意，縮放後，除以大於 1 的數字會使 ∥w∥ 變小。   
+- 這樣 1 / ∥w∥會變更大，結果更好，違反原先最佳解的假設。   
+   
+所以，即使放鬆條件，還是會出現等於1的狀況   
+   
+再來的簡化方向：   
+1. 因為習慣，把 max 問題轉為 min 問題（目標式直接倒數）。   
+2. ∥w∥的長度，也就是會有根號運算，不方便處理。所以換一種做法，改成w^Tw的內積形式   
+3. 補上 1/2（數學小技巧，方便後續導數運算）   
+   
+   
+所以費了一番功夫，把要處理的問題變得比較「好看」一點   
+<Blogimage src="/ml1_img/11-3.png" alt="圖示" width={650} height={400} />
+
+   
+接下來才要進入重頭戲，準備開始解決這個問題   
+   
+## Support Vector Machine   
+來看看要解決的問題：   
+<Blogimage src="/ml1_img/12-3.png" alt="圖示" width={650} height={400} />
+一開始不介紹一般解形式，先用一個人工設計例子方便理解：   
+假如在一個二維空間中有四個點，兩個正類別，兩個負類別   
+
+<Blogimage src="/ml1_img/13-2.png" alt="圖示" width={650} height={400} />
+
+帶入我們的方程組得到：   
+<Blogimage src="/ml1_img/14-3.png" alt="圖示" width={650} height={400} />
+
+而實際上條件之間可以化簡整理成：   
+w1≥+1   
+w2≤−1   
+我們的目標式為   
+
+$$
+\min \frac12\mathbf w^T\mathbf w 
+
+$$
+所以變成   
+
+$$
+\\ \frac12(w_1^2+w_2^2)≥ \frac12*(1+1) = 1
+$$
+   
+今天直接讓w1=1, w2=−1, 得到b=−1，   
+可以知道這條分類直線為：x1−x2−1=0   
+得到我們的分類模型：   
+
+$$
+g_{SVM}(x)=sign(x1−x2−1)
+$$
+順帶一提，算出的margin（胖度）是：   
+
+$$
+margin(b,w)= 
+\frac1{||w||}= \frac1{\sqrt2}
+
+$$
+   
+剛剛是特別例子，有簡易的解法與解
+接下面介紹 SVM 的一般求解方法：   
+<Blogimage src="/ml1_img/15-2.png" alt="圖示" width={650} height={400} />
+如果你的數學底子夠好，一眼就可以看穿這是典型的二次規劃問題，即**Quadratic Programming（QP）**   
+所以二次規劃問題有什麼方法解，這邊SVM就可以用什麼方法解開   
+所以要來先看看一般二次規劃問題怎麼解決的，再來對應到我們的SVM問題   
+一般二次規劃解法：   
+- 找到Q,p,A,c矩陣   
+- 找一個解二次規劃的工具   
+- 得到u   
+   
+   
+對應到SVM問題   
+（這邊都是 數學力量～）   
+<Blogimage src="/ml1_img/16-2.png" alt="圖示" width={650} height={400} />
+
+所以SVM的二次規劃問題也可以總結成三步   
+- 計算對應的二次規劃參數 Q、p、A、c   
+- 根據二次規劃工具，計算 b、w   
+- 成功得到最佳分類面   
+<Blogimage src="/ml1_img/17-3.png" alt="圖示" width={650} height={400} />
+
+   
+以上這種方法稱為Linear Hard-Margin SVM Algorithm，滿足：   
+- hard-margin: 一定要分類正確   
+- linear：分類法是用hyperplane   
+   
+   
+從數學上解釋了Linear SVM的有效性，我們還得從其他角度來解釋看看為什麼對於分類未看過的資料上有幫助   
+   
+## Reasons behind Large-Margin Hyperplane   
+   
+首先從 **Regularization** 角度分析：
+regularization 的目標是將 Ein（訓練誤差）最小化，條件是    
+
+$$
+\mathbf{w}^T\mathbf{w}≤C
+$$
+
+SVM 的目標是將   
+
+$$
+\mathbf{w}^T\mathbf{w}
+$$
+最小化，條件是    
+
+$$
+y_n(\mathbf{w}^T\mathbf{x}n + b) \geq 1
+$$
+換句話就是保證Ein=0   
+有沒有發現regularization 與 SVM 的目標和限制條件剛好相反，這表示了兩者考慮的內容是類似的，而想當然效果也是相近的。SVM 也可以說是一種 weight-decay regularization，限制條件是 Ein=0   
+   
+<Blogimage src="/ml1_img/18-1.png" alt="圖示" width={650} height={400} />
+
+   
+   
+再來從 Dichotomies 的角度分析：
+Large-Margin 會限制 Dichotomies 的個數。
+如果今天使用 PLA，可以很好地 shatter 3 個點（如下圖），因為不會在意分類面的胖瘦。
+但使用 SVM，會介意分類面的胖瘦時，可能就沒辦法 shatter 3 個點。   
+這從視覺上也很好理解，假如一條分類面越「胖」，即對應 Large-Margin，那麼它可能 shatter 的點的個數就越少：   
+<Blogimage src="/ml1_img/19.png" alt="圖示" width={650} height={400} />
+
+
+從dichotomy再延伸到vc dimension，事實上如果 Dichotomies 越少，複雜度就越低，即有效的 VC Dimension 就越小，從而得到 Eout≈Ein，表示模型的泛化能力強。   
+真假！？可以這樣延伸喔，來看看為什麼：   
+首先，我們考慮一下 Large-Margin 演算法的 VC Dimension，記為 $d_{VC}(\mathcal{A}_\rho)$，而演算法的 VC Dimension 定義是最多可以 shatter 的點的個數。
+
+假如今天資料點的分布是在圓的邊界上面：
+
+- 如果 Margin 為 $0$，即 $\rho = 0$，這條細細的直線可以很容易將圓上任意三點分開（shatter），那麼可以得到其 $d_{VC} = 3$
+
+- 如果 $\rho > \frac{\sqrt{3}}{2}$（相當於對胖瘦有規定），這條粗粗的直線無論如何都不能將圓上的任意三點完全分開（no shatter），因為圓上必然存在兩點的距離小於 $\frac{\sqrt{3}}{2}$，那麼其對應的 $d_{VC} < 3$
+$\frac{\sqrt{3}}{2}$ 這個數字是當三個資料點在圓邊界上均勻分布時（$\theta = 120^\circ$），任兩點間的直線距離（弦長）
+<Blogimage src="/ml1_img/20.png" alt="圖示" width={650} height={400} />
+
+所以擴展到高維空間，圓形變成超球體時，得到的dvc關係式變成   
+<Blogimage src="/ml1_img/21.png" alt="圖示" width={650} height={400} />
+d+1可以直接聯想到Perceptrons，Large-Margin 演算法的「小於等於」d+1更可以說明模型的泛化能力強，   
+總而言之，由於我們關注了 Large-Margin，得到的 Dichotomies 個數減少，從而 VC Dimension 也減少了，代表降低了模型複雜度，提高了泛化能力。   
+   
+最後，原來好好的hyperplane給他large-margin除了在泛化能力的提升還有什麼好處呢？   
+<Blogimage src="/ml1_img/image_k.png" alt="圖示" width={650} height={400} />
+在「機器學習基石」中，我們為了解決non-linear的情況，為原本的hyperplane引入了feature transform的方法，儘管可以有效應付非線性資料集，但是代價就是特徵數量急劇上升，計算量變得龐大。   
+今天hyperplane升級成「large-margin hyperplane」，參考的特徵數更少，我們也可以嘗試結合feature transform的方法，來解決non-linear的資料分布。   
+所以顯而易見，下一步的目標就是   
+"Large-margin hyperplanes + Feature transform" 又稱為Dual SVM，為了解決non-linear data的狀況   
+<Blogimage src="/ml1_img/image.png" alt="圖示" width={650} height={400} />
+
+   
+# 章節回顧   
+ --- 
+- Large-Margin Separating Hyperplane：用數學方程組表示出Large-Margin的概念   
+- Standard Large-Margin Problem：簡化Large-Margin的方程組   
+- Support Vector Machine：利用QP的方法解決Large-Margin的方程組   
+- Reasons behing Large-Margin Hyperplane：從其他觀點來看SVM的有效性及意義   
+   
+
+<br />
+<br />
+
+## 下一步：Non-linear的SVM   

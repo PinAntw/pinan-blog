@@ -2,6 +2,7 @@
 
 import { Button, Container, Overlay, Text, Title, Grid, Flex,Space } from '@mantine/core';
 import classes from './HeroContentLeft.module.css';
+import { IconDownload } from '@tabler/icons-react';
 
 export function HeroContentLeft() {
   return (
@@ -21,9 +22,9 @@ export function HeroContentLeft() {
                 sm: 12,
                 md: 8,   
               }}>
-            <Text size="xl"  style={{ color: 'white' }}>
-            Build fully functional accessible web applications faster than ever – Mantine includes
-            more than 120 customizable components and hooks to cover you in any situation
+            <Text size="xl" style={{ color: 'white' }}>
+              Currently a first-year Master&apos;s student at NTU Information Management Department.<br />
+              Deeply passionate about software development, data analysis, and artificial intelligence.
             </Text>
           </Grid.Col>
           <Grid.Col span={{
@@ -38,8 +39,14 @@ export function HeroContentLeft() {
                 wrap="wrap"
                 mt="xs"
               >
-              <Button variant="outline" radius= 'xs' className={classes.heroButton}>Button</Button>
-              <Button variant="outline" radius= 'xs' className={classes.heroButton}>Button</Button>
+              {/* <Button variant="outline" radius= 'xs' className={classes.heroButton}>Project</Button> */}
+              <Button onClick={() => {
+                        window.open('/resume.pdf', '_blank', 'noopener,noreferrer');
+                      }} 
+                      rightSection={<IconDownload size={18} />} 
+                      variant="outline" 
+                      radius= 'xs' 
+                      className={classes.heroButton}>My CV</Button>
             </Flex>
           </Grid.Col>
         </Grid>

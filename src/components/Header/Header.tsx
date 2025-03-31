@@ -6,10 +6,11 @@ import { useEffect, useState } from 'react';
 import classes from './HeaderSearch.module.css';
 
 const links = [
-  { link: '#about', label: 'About' },
-  { link: '#projects', label: 'Projects' },
-  { link: '#blog', label: 'Blog' },
-  { link: '#contact', label: 'Contact me' },
+  { link: '/#home', label: 'Home' },
+  { link: '/#about', label: 'About' },
+  { link: '/#projects', label: 'Projects' },
+  { link: '/#blog', label: 'Blog' },
+  { link: '/#contact', label: 'Contact me' },
 ];
 
 export function Header() {

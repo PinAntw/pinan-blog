@@ -1,7 +1,9 @@
 .footer {
-  margin-top: 120px;
   padding-top: calc(var(--mantine-spacing-xl) * 2);
   padding-bottom: calc(var(--mantine-spacing-xl) * 2);
+  background-color: rgb(0, 0, 0);
+  height: 100dvh;
+  opacity: 0.9;
 }
 
 .logo {

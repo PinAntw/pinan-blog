@@ -3,6 +3,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { MantineProvider } from "@mantine/core";
 import { Footer } from "@/components/Footer/Footer";
+import { Header } from "@/components/Header/Header";
+import 'katex/dist/katex.min.css';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -35,6 +37,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <MantineProvider >
+        <Header />
         {children}
         <Footer id="contact"></Footer>
         </MantineProvider>
