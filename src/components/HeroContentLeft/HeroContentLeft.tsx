@@ -41,7 +41,7 @@ export function HeroContentLeft() {
               >
               {/* <Button variant="outline" radius= 'xs' className={classes.heroButton}>Project</Button> */}
               <Button onClick={() => {
-                        window.open('/resume.pdf', '_blank', 'noopener,noreferrer');
+                        window.open('/resume_an.pdf', '_blank', 'noopener,noreferrer');
                       }} 
                       rightSection={<IconDownload size={18} />} 
                       variant="outline" 
