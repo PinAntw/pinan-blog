@@ -13,7 +13,7 @@ export function HeroContentLeft() {
         zIndex={0}
       />
       <Container className={classes.container} size="md">
-        <Title className={classes.title}>Hi there! I&apos;m Pinan Lee</Title>
+        <Title className={classes.title}>Hi there! <br /> I&apos;m Pinan Lee</Title>
         <Space h="lg" />
         {/* style={{ border: '1px solid white' }} */}
         
